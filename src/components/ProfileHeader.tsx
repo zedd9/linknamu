@@ -1,21 +1,33 @@
+import Image from "next/image";
+
 type ProfileHeaderProps = {
   name: string;
   bio: string;
-  avatarInitial: string;
+  avatarSrc: string;
 };
 
 export default function ProfileHeader({
   name,
   bio,
-  avatarInitial,
+  avatarSrc,
 }: ProfileHeaderProps) {
   return (
-    <div className="flex flex-col items-center gap-3 text-center">
-      <div className="flex h-36 w-36 items-center justify-center rounded-full bg-zinc-200 text-5xl font-semibold text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
-        {avatarInitial}
+    <div className="flex flex-col items-center gap-4 text-center">
+      <div className="rounded-full bg-gradient-to-br from-white/80 to-orange-100/40 p-1 shadow-[0_12px_30px_-10px_rgba(194,120,52,0.45)] dark:from-white/10 dark:to-white/0">
+        <Image
+          src={avatarSrc}
+          alt={name}
+          width={150}
+          height={150}
+          className="h-36 w-36 rounded-full object-cover ring-1 ring-black/5"
+        />
       </div>
-      <h1 className="text-xl font-bold text-foreground">{name}</h1>
-      <p className="text-sm text-zinc-500 dark:text-zinc-400">{bio}</p>
+      <div className="flex flex-col gap-1.5">
+        <h1 className="text-xl font-bold tracking-tight text-foreground">
+          {name}
+        </h1>
+        <p className="text-sm text-[#8a7160] dark:text-[#c9b6a4]">{bio}</p>
+      </div>
     </div>
   );
 }
