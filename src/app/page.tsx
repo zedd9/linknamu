@@ -1,13 +1,30 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import ProfileHeader from "@/components/ProfileHeader";
 import LinkCard from "@/components/LinkCard";
 
 const links = [
-  { label: "🐙 깃허브", href: "https://github.com/zedd9" },
-  { label: "✍️ 블로그", href: "" },
-  { label: "📮 이메일", href: "mailto:gusdnre@gmail.com" },
+  { id: "github", label: "🐙 깃허브", href: "https://github.com/zedd9" },
+  { id: "blog", label: "✍️ 블로그", href: "" },
+  { id: "email", label: "📮 이메일", href: "mailto:gusdnre@gmail.com" },
 ];
 
 export default function Home() {
+  const [clickCounts, setClickCounts] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    fetch("/api/link-clicks")
+      .then((res) => res.json())
+      .then((counts: Record<string, number>) => setClickCounts(counts))
+      .catch(() => {});
+  }, []);
+
+  const handleLinkClick = (id: string) => {
+    setClickCounts((prev) => ({ ...prev, [id]: (prev[id] ?? 0) + 1 }));
+    fetch(`/api/link-clicks/${id}`, { method: "POST" }).catch(() => {});
+  };
+
   return (
     <div className="flex min-h-full flex-1 items-start justify-center bg-gradient-to-b from-[#fff8f0] via-[#fdecdd] to-[#fbe1cd] px-6 py-20 dark:from-[#231810] dark:via-[#2b1d13] dark:to-[#241a12]">
       <main className="flex w-full max-w-sm flex-col items-center gap-10">
@@ -18,7 +35,13 @@ export default function Home() {
         />
         <div className="flex w-full flex-col gap-4">
           {links.map((link) => (
-            <LinkCard key={link.label} label={link.label} href={link.href} />
+            <LinkCard
+              key={link.id}
+              label={link.label}
+              href={link.href}
+              clickCount={clickCounts[link.id] ?? 0}
+              onClick={() => handleLinkClick(link.id)}
+            />
           ))}
         </div>
       </main>
